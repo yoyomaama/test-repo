@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  docker-oss:
+  docker-test:
     runs-on: ubuntu-latest
     steps:
       -
@@ -25,7 +25,10 @@ jobs:
             type=ref,event=branch
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=${{ github.head_ref }}
-
+      - name: Set Version
+        run: |
+          VER=$(head -1 src/.version)
+          echo "VERSION=$VER  " >> $GITHUB_ENV
       -
         name: Login to DockerHub
         uses: docker/login-action@v2
@@ -42,6 +45,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            VERSION=${{ env.VERSION }}
             COMMIT_HASH=${{ github.sha }}
             REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
