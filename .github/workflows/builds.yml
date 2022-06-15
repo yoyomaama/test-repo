@@ -19,7 +19,7 @@ jobs:
         run: |
           VER=$(head -1 src/.version)
           echo $VER
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
       -
         name: Docker meta
         id: meta
@@ -43,7 +43,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.VERSION }}
+          tags: yoyomaama/test-repo:${{ env.RELEASE_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
