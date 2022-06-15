@@ -15,6 +15,12 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
+        name: Set Version
+        run: |
+          VER=$(head -1 src/.version)
+          echo $VER
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -37,7 +43,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
